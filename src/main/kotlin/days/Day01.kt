@@ -6,7 +6,7 @@ import kotlin.math.abs
 
 class Day01(): Day {
     override fun solveA(data: List<String>): String {
-        val numberEntries = ListUtils.splitList(data, "   ") {
+        val numberEntries = ListUtils.getVerticalLists(data, "   ") {
             it.toInt()
         }
 
@@ -21,7 +21,7 @@ class Day01(): Day {
     }
 
     override fun solveB(data: List<String>): String {
-        val numberEntries = ListUtils.splitList(data, "   ") {
+        val numberEntries = ListUtils.getVerticalLists(data, "   ") {
             it.toInt()
         }
 
