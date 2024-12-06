@@ -1,7 +1,10 @@
 package be.brentberghmans.advent2024.models
 
-import be.brentberghmans.advent2024.errors.*
-import be.brentberghmans.advent2024.extensions.readNonEmptyLines
+import be.brentberghmans.advent2024.errors.DayCouldNotBeCreated
+import be.brentberghmans.advent2024.errors.InvalidDayClass
+import be.brentberghmans.advent2024.errors.InvalidInput
+import be.brentberghmans.advent2024.errors.InvalidPart
+import be.brentberghmans.advent2024.extensions.findLastIndex
 import be.brentberghmans.advent2024.utils.ConsoleUtils
 import java.nio.file.Path
 import kotlin.io.path.Path
@@ -72,7 +75,7 @@ class DayWalker {
 
                 if (isSolved(dayInfo)) {
                     println("[${dayInfo.getLogKey()}] skipping, already solved")
-                    return@forEach;
+                    return@forEach
                 }
 
                 val dayInstance = createDayInstance(dayInfo.number)
@@ -130,7 +133,7 @@ class DayWalker {
 
     private fun setSolved(info: DayInfo, solved: Boolean) {
         if (!info.isExample)
-            _solvedMap[info.getKey()] = solved;
+            _solvedMap[info.getKey()] = solved
         else
             _solvedExamples[info.getKey()] = solved
     }
@@ -158,12 +161,12 @@ class DayWalker {
         }
 
         val isExampleCorrect = solution.trim() == exampleInfo.solution.trim()
-        println("[${dayInfo.getLogKey()}] example is ${if (isExampleCorrect) "correct" else "wrong"}")
+        println("[${dayInfo.getLogKey()}] example is ${if (isExampleCorrect) "correct" else "wrong, got: $solution, expected: ${exampleInfo.solution}"}")
         return isExampleCorrect
     }
 
     private fun solvePart(path: Path, dayInfo: DayInfo, day: Day): Boolean {
-        val data = path.toFile().readNonEmptyLines()
+        val data = path.toFile().readLines()
 
         val solution = when (dayInfo.part) {
             "a" -> day.solveA(data)
@@ -176,14 +179,20 @@ class DayWalker {
     }
 
     private fun readExample(path: Path): ExampleInfo {
-        val lines = path.toFile().readNonEmptyLines()
+        val lines = path.toFile().readLines()
         if (lines.isEmpty()) {
             throw InvalidInput(path.fileName.toString())
         }
 
+        val exampleIndex = lines.findLastIndex { it.isNotEmpty() }
+        if (exampleIndex == -1) {
+            throw InvalidInput(path.fileName.toString())
+
+        }
+
         return ExampleInfo(
-            lines.subList(0, lines.size - 1),
-            lines[lines.size - 1]
+            lines.subList(0, exampleIndex),
+            lines[exampleIndex]
         )
     }
 

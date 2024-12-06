@@ -1,5 +1,6 @@
 package be.brentberghmans.advent2024.days
 
+import be.brentberghmans.advent2024.extensions.filterEmpty
 import be.brentberghmans.advent2024.extensions.some
 import be.brentberghmans.advent2024.extensions.toIntList
 import be.brentberghmans.advent2024.models.Day
@@ -44,7 +45,7 @@ class Day02: Day {
      * But I had limited time, so I scrapped it and went to the permutation solution, which is simple and elegant.
      */
     override fun solveB(data: List<String>): String {
-        val rows = data.map { line ->
+        val rows = data.filterEmpty().map { line ->
             line.toIntList()
         }
 
@@ -71,7 +72,7 @@ class Day02: Day {
      * This is because if the unmodified row is valid, it means that the first permutation will also be valid
      */
     fun solveBSimple(data: List<String>): String {
-        val rows = data.map { line ->
+        val rows = data.filterEmpty().map { line ->
             line.toIntList()
         }
 

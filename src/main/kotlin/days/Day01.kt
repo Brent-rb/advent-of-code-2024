@@ -1,5 +1,6 @@
 package be.brentberghmans.advent2024.days
 
+import be.brentberghmans.advent2024.extensions.filterEmpty
 import be.brentberghmans.advent2024.extensions.toIntList
 import be.brentberghmans.advent2024.models.Day
 import kotlin.math.abs
@@ -12,7 +13,7 @@ class Day01(): Day {
      * 3. Calculate the sum of the differences
      */
     override fun solveA(data: List<String>): String {
-        val rows = data.map { it.toIntList("   ") }
+        val rows = data.filterEmpty().map { it.toIntList("   ") }
         val column0 = rows.map { it[0] }.sorted()
         val column1 = rows.map { it[1] }.sorted()
         val differences = rows.indices.map {
@@ -30,7 +31,7 @@ class Day01(): Day {
      * 4. Sum the result of 3
      */
     override fun solveB(data: List<String>): String {
-        val rows = data.map { it.toIntList("   ") }
+        val rows = data.filterEmpty().map { it.toIntList("   ") }
         val column0 = rows.map { it[0] }
         val column1 = rows.map { it[1] }
         val occurrences = column1.groupingBy { it }.eachCount()

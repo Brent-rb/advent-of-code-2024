@@ -1,5 +1,6 @@
 package be.brentberghmans.advent2024.days
 
+import be.brentberghmans.advent2024.extensions.filterEmpty
 import be.brentberghmans.advent2024.models.Day
 
 class Day03: Day {
@@ -23,7 +24,7 @@ class Day03: Day {
         val regex = Regex("mul\\((\\d+),(\\d+)\\)")
 
         // Map the multiple lines to a flat list of match results
-        val sumOfMultiples = data.flatMap {
+        val sumOfMultiples = data.filterEmpty().flatMap {
             regex.findAll(it)
         // Calculate the sum of the multiplication
         }.sumOf {
@@ -61,7 +62,7 @@ class Day03: Day {
 
         var isEnabled = true
         // Map the multiple lines to a flat list of match results
-        val sumOfMultiples = data.flatMap {
+        val sumOfMultiples = data.filterEmpty().flatMap {
             regex.findAll(it)
         // Filter out the mul's that are disabled and the dos and don'ts
         }.filter {
