@@ -14,13 +14,13 @@ data class NumberPair(
     val b: Int
 )
 
-data class ConditionIndex(
+data class NumberIndex(
     val number: Int,
     var index: Int
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ConditionIndex) return false
+        if (other !is NumberIndex) return false
 
         return number == other.number
     }
@@ -100,61 +100,69 @@ class Day05: Day {
         val pairList = dataTupple.a
         val inputList = dataTupple.b
 
+        // Construct pairs [X, Y] where if X is found Y is illegal afterwards
         val pairs = pairList.map {
             val splits = it.split("|")
             NumberPair(splits[1].toInt(), splits[0].toInt())
         }
-
         val afterMap = pairs.groupBy { it.a }
         var count = 0
-        var validCount = 0
 
         for (line in inputList) {
-            /** If a number is in here, if encountered in the line it means it broke a condition */
-            val illegalNumbers = mutableSetOf<ConditionIndex>()
+            /** If an entry.number is in this list, it means it's illegal if encountered and should be moved to entry.index */
+            val illegalNumberIndices = mutableSetOf<NumberIndex>()
             val entries = line.toIntList(",").toMutableList()
             var isCorrect = true
 
             for (i in entries.indices) {
                 val number = entries[i]
-                val condition = illegalNumbers.find { it.number == number }
-                if (condition == null) {
+                // Check if number is an illegal number
+                val illegalNumber = illegalNumberIndices.find { it.number == number }
+                // If not an illegal number, add all NEW entries
+                if (illegalNumber == null) {
                     val afterEntries = (afterMap[number] ?: listOf()).map { it.b }
-                    illegalNumbers.addAll(afterEntries.map { ConditionIndex(it, i) })
+                    illegalNumberIndices.addAll(afterEntries.map { NumberIndex(it, i) })
                     continue
                 }
+
+                // Illegal number part
                 isCorrect = false
 
-                val moveToIndex = condition.index
-                illegalNumbers.forEach {
+                // Store the index to move to
+                val moveToIndex = illegalNumber.index
+                // Update all indices that are going to be shifted
+                illegalNumberIndices.forEach {
                     if (it.index >= moveToIndex) {
                         it.index += 1
                     }
                 }
 
+                // Move item to the correct index
                 entries.removeAt(i)
                 entries.add(moveToIndex, number)
 
+                // Retrieves the illegal numbers for the current numbers
                 val afterEntries = (afterMap[number] ?: listOf()).map { it.b }
                 val addEntries = mutableListOf<Int>()
+
                 afterEntries.forEach { afterNumber ->
-                    val existingEntry = illegalNumbers.find { it.number == afterNumber }
+                    val existingEntry = illegalNumberIndices.find { it.number == afterNumber }
+                    // If this number doesn't exist yet, add it later
                     if (existingEntry == null) {
                         addEntries.add(afterNumber)
                     }
+                    // If it does exist and the index is greater than the index we moved to, replace the index
                     if (existingEntry != null && existingEntry.index > moveToIndex) {
                         existingEntry.index = moveToIndex
                     }
                 }
-                illegalNumbers.addAll(addEntries.map { ConditionIndex(it, moveToIndex) })
+                // Add remaining illegal numbers
+                illegalNumberIndices.addAll(addEntries.map { NumberIndex(it, moveToIndex) })
             }
 
             if (!isCorrect) {
                 println(entries)
                 count += entries.middle() ?: 0
-            }
-            else {
-                validCount += entries.middle() ?: 0
             }
         }
 
