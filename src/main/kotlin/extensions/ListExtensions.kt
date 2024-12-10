@@ -51,16 +51,24 @@ fun <T> List<List<T>>.inBounds(pos: Point): Boolean {
     return pos.y in indices && pos.x in this[pos.y].indices
 }
 
-operator fun <T> List<List<T>>.get(pos: Point): T {
+operator fun <T> List<List<T>>.get(pos: Point): T? {
+    if (!inBounds(pos)) {
+        return null
+    }
+
     return this[pos.y][pos.x]
 }
 
 fun List<List<Char>>.findAll(char: Char): List<Point> {
+    return findAll { it == char }
+}
+
+fun <T> List<List<T>>.findAll(predicate: (T) -> Boolean): List<Point> {
     val list = mutableListOf<Point>()
 
     forEachIndexed { y, row ->
         row.forEachIndexed { index, c ->
-            if (c == char)
+            if(predicate(c))
                 list.add(Point(index, y))
         }
     }
