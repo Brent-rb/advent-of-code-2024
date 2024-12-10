@@ -76,18 +76,6 @@ class Day09: Day {
         return sum.toString()
     }
 
-    fun print(fileData: List<FileData>, emptyData: List<FileData>) {
-        val joined = (fileData + emptyData).sortedBy { it.range.first }
-
-        for (data in joined) {
-            val char = if (data.id < 0) "." else data.id.toString()
-            for (x in data.range) {
-                print(char)
-            }
-        }
-        println()
-    }
-
     override fun solveB(data: List<String>): String {
         val row = data[0]
         val fileData = mutableListOf<FileData>()
@@ -167,7 +155,6 @@ class Day09: Day {
                 continue
             }
         }
-        println()
 
         return sum.toString()
     }
