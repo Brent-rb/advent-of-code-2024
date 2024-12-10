@@ -161,7 +161,6 @@ class Day05: Day {
             }
 
             if (!isCorrect) {
-                println(entries)
                 count += entries.middle() ?: 0
             }
         }
